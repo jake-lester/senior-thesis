@@ -28,7 +28,7 @@ class TwitterStreamer():
 
 class StdOutListener(StreamListener):  # inherits from StreamListener
     """
-    This is a basic listener class that just prints recieved tweets to stdout
+    This is a basic listener class that writes recieved tweets to stdout
     """
 
     def __init__(self, fetched_tweets_filename):
