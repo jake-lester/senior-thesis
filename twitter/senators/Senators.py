@@ -4,17 +4,10 @@ import os
 import pickle
 import datetime
 
-sys.path.appendn (os.getcwd() + "\\parameters")
+sys.path.append(os.getcwd() + "\\parameters")
 dirpath = os.getcwd().split("\\")
 
 
-# this stuff should be under twitter parent dir in a main
-import tweepy
-import twitter_credentials
-
-auth = tweepy.OAuthHandler(twitter_credentials.CONSUMER_KEY, twitter_credentials.CONSUMER_SECRET)
-auth.set_access_token(twitter_credentials.ACCESS_TOKEN, twitter_credentials.ACCESS_TOKEN_SECRET)
-api = tweepy.API(auth)
 
 
 class Senators():
