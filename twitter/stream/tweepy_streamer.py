@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     hash_tag_list = ["donald trump", "hillary clinton"]
     follow_list = [tweepy_filter_parameters.SENATOR_HANDLES[0]]
-    fetched_tweets_filename = "tweets.json"
+    fetched_tweets_filename = "../output/tweets.json"
 
     twitter_streamer = TwitterStreamer()
     twitter_streamer.stream_tweets(fetched_tweets_filename, hash_tag_list=hash_tag_list)#, follow_list=["@realDonaldTrump"])
