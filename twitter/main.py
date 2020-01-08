@@ -38,7 +38,7 @@ print("Commencing Stream on ", today)
 save_file = output_fp+"\\" + today + ".json"
 f = open(save_file, "w+")
 f.close()
-time_limit= 10
+time_limit= 240
 twitter_streamer = TwitterStreamer()
 
 # set time_limit or just use market hours

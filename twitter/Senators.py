@@ -10,7 +10,7 @@ import twitter_credentials
 auth = tweepy.OAuthHandler(twitter_credentials.CONSUMER_KEY, twitter_credentials.CONSUMER_SECRET)
 auth.set_access_token(twitter_credentials.ACCESS_TOKEN, twitter_credentials.ACCESS_TOKEN_SECRET)
 
-# make API #TODO put this guy in the place it needs to be and then just pass auth as an arg
+# make API
 API = tweepy.API(auth)
 
 
