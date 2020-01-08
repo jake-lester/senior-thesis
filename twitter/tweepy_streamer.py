@@ -7,6 +7,7 @@ import twitter_credentials
 import tweepy_filter_parameters
 import datetime
 import time
+import json
 
 
 class TwitterStreamer():
@@ -49,23 +50,17 @@ class MyStreamListener(StreamListener):  # inherits from StreamListener
         self.time_limit = time_limit
         self.start_time = time.time()
 
-    def from_original(self, status):
+    def is_retweet(self, data):
         # ensures our streamer only gets tweets from our folow list, not responses to
-        # taken from @nelvintan tweepy issues 981
-        if hasattr(status, 'retweeted_status'):
-            return False
-        elif status.in_reply_to_status_id != None:
-            return False
-        elif status.in_reply_to_screen_name != None:
-            return False
-        elif status.in_reply_to_user_id != None:
-            return False
-        else:
-            return True
+        # inspired from @nelvintan tweepy issues 981
+        data_dict = json.loads(data)
+        return data_dict['text'][0:4] == "RT @"
 
     def on_data(self, data):
         # writes data to save_file if market hours or by time limit
-        if not self.time_limit:
+        if self.is_retweet(data):
+            return True
+        elif not self.time_limit:
             print("broken")
             if datetime.now().hour >= 16:  # market is closed at 16:00
                 self.save_file.close()

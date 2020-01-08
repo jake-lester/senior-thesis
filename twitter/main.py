@@ -10,6 +10,9 @@ from tweepy_streamer import TwitterStreamer, MyStreamListener
 auth = tweepy.OAuthHandler(twitter_credentials.CONSUMER_KEY, twitter_credentials.CONSUMER_SECRET)
 auth.set_access_token(twitter_credentials.ACCESS_TOKEN, twitter_credentials.ACCESS_TOKEN_SECRET)
 
+# location to store streamed tweets
+output_fp = "senator_tweets"
+
 # make API #TODO put this guy in the place it needs to be and then just pass auth as an arg
 now = datetime.now()
 
@@ -32,7 +35,7 @@ else:
 today = str(datetime.today().strftime('%d-%m-%Y'))
 print("Commencing Stream on ", today)
 
-save_file = "output\\" + today + ".json"
+save_file = output_fp+"\\" + today + ".json"
 f = open(save_file, "w+")
 f.close()
 time_limit= 10
@@ -40,4 +43,4 @@ twitter_streamer = TwitterStreamer()
 
 # set time_limit or just use market hours
 twitter_streamer.stream_tweets(auth, filter_params, save_file, time_limit=time_limit)
-print("Done Streaming")
+#print("Done Streaming")
