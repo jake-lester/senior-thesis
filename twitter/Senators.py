@@ -6,13 +6,6 @@ from datetime import datetime
 import tweepy
 import twitter_credentials
 
-# set up authorization
-auth = tweepy.OAuthHandler(twitter_credentials.CONSUMER_KEY, twitter_credentials.CONSUMER_SECRET)
-auth.set_access_token(twitter_credentials.ACCESS_TOKEN, twitter_credentials.ACCESS_TOKEN_SECRET)
-
-# make API
-API = tweepy.API(auth)
-
 
 class Senators():
     """
@@ -42,6 +35,8 @@ class Senators():
         # first transformation
         for line in senators_file.readlines():
             self.update_senator_screen_name_list(line)
+        return self.senator_screen_names
+
 
     def update_senator_user_object_list(self, handle):
         if handle == "N/A":
