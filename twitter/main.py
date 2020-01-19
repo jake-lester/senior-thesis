@@ -3,7 +3,8 @@ import tweepy
 import twitter_credentials
 import tweepy_filter_parameters
 from Senators import Senators
-from tweepy_streamer import TwitterStreamer, MyStreamListener
+from tweepy import OAuthHandler
+from tweepy_streamer_v2 import TwitterStreamer, MyStreamListener
 
 # location to store streamed tweets
 output_fp = "twitter\\output\\senators\\"
@@ -18,8 +19,10 @@ screen_names = s.make_senator_list(senator_text_file)
 
 screen_names = [handle for handle in screen_names if handle != "N/A"]
 # stream filter parameters
+
+jake_name = ["@JakeLes68516333"]
 filter_params = {
-    "follow_list": screen_names,  # tweepy_filter_parameters.FOLLOW,
+    "follow_list": jake_name, #screen_names,  # tweepy_filter_parameters.FOLLOW,
     "track_list": tweepy_filter_parameters.TRACK,
     "async_bool": tweepy_filter_parameters.IS_ASYNC
 }
@@ -43,5 +46,9 @@ f.close()
 
 # start stream
 twitter_streamer = TwitterStreamer()
-twitter_streamer.start_stream(cred, filter_params, save_fp, stop_cond=60)
-# print("Done Streaming")
+#twitter_streamer.start_stream(cred, filter_params, save_fp, stop_cond=120)
+#v2
+auth = OAuthHandler(twitter_credentials.CONSUMER_KEY, twitter_credentials.CONSUMER_SECRET)
+auth.set_access_token(twitter_credentials.ACCESS_TOKEN, twitter_credentials.ACCESS_TOKEN_SECRET)
+twitter_streamer.stream_tweets(auth, filter_params, save_fp, time_limit=False)
+print("Done Streaming")
