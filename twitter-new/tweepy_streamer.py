@@ -135,7 +135,7 @@ if __name__ == '__main__':
 
     api = API(auth)
 
-    l = StdOutListener(save_fp="twitter-new\\output\\new_sample_tweet.json", stop_cond=8, api=api)
+    l = StdOutListener(save_fp="output\\new_sample_tweet.json", stop_cond=8, api=api)
 
     stream = Stream(auth, l)
     stream.filter(track=['basketball'])
