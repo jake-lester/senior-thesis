@@ -87,5 +87,5 @@ def main(keywords, save_fp, time_limit):
     stream = Stream(api.auth, tweets_listener)
     stream.filter(track=keywords)
 
-
+print("!!! stream-tweets seems to be running at least?")
 main(["basketball"], "streamers\\output\\new_sample_tweet.json", 8)
