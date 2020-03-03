@@ -23,6 +23,7 @@ class StdOutListener(StreamListener):
     def __init__(self, api, save_fp, stop_cond):
         self.start_time = time.time()
         self.save_fp = save_fp
+        self.save_no=2000
         self.stop_cond = stop_cond
         self.api = api
         self.data = {}
@@ -31,10 +32,13 @@ class StdOutListener(StreamListener):
         logger.info(f"Processing tweet id {status.id}")
         elapsed_time = time.time() - self.start_time
         if elapsed_time >= self.stop_cond:
-            with open(self.save_fp, 'w') as fout:
+            with open(self.save_fp+str(self.save_no)+".json", 'w') as fout:
                 json.dump(self.data, fout)
             fout.close()
-            return False
+            print("saved to ", self.save_no)
+            self.save_no += 1
+            self.start_time = time.time()
+            self.data={}
 
         elif not from_creator(status):
             return True
@@ -119,22 +123,27 @@ def main(save_fp, time_limit, keywords=None, accountstofollow=None):
 
 
 if __name__ == "__main__":
+    '''
+    NOTE!
+    includes retweets of people in the list. post filtering is required for user ids not in our base'''
+
     from datetime import datetime
 
     today = str(datetime.today().strftime('%d-%m-%Y'))
     print("Commencing Stream on ", today)
     # make file if not exist
     # todo make sure file doesnt exist
-    save_fp = "streamers\\output\\" + today + ".json"
+    save_fp = "streamers\\output\\"
     #try:
     #    open(save_fp)
     #    print(save_fp, "already exists. Not running to avoid overwrite")
     #except:
-    f = open(save_fp, "w+")
-    f.close()
+    #f = open(save_fp, "w+")
+    #f.close()
     df = pd.read_csv(os.getcwd()+"\\finAccounts.csv")
     accnts = df.Twitter_ID.values
     accnts = [str(x) for x in accnts]
-    accnts.append("1193623572570345473")
+    #accnts.append("1193623572570345473")
     #return
-    main( save_fp, 40, accountstofollow=accnts)
+    main( save_fp, 900, accountstofollow=accnts)
+    #save every 15 minutes
