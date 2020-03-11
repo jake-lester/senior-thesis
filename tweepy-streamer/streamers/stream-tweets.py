@@ -7,11 +7,15 @@ import json
 import logging
 import pandas as pd
 import os
+from datetime import datetime
+from urllib3 import exceptions
 
 from config import create_api
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
+
+SAVE_NO=3000
 
 
 class StdOutListener(StreamListener):
@@ -23,24 +27,25 @@ class StdOutListener(StreamListener):
     def __init__(self, api, save_fp, stop_cond):
         self.start_time = time.time()
         self.save_fp = save_fp
-        self.save_no=2000
+        #self.save_no=SAVE_NO
         self.stop_cond = stop_cond
         self.api = api
         self.data = {}
 
     def on_status(self, status):
+        global SAVE_NO
         logger.info(f"Processing tweet id {status.id}")
         elapsed_time = time.time() - self.start_time
         if elapsed_time >= self.stop_cond:
-            with open(self.save_fp+str(self.save_no)+".json", 'w') as fout:
+            with open(self.save_fp+str(SAVE_NO)+".json", 'w') as fout:
                 json.dump(self.data, fout)
             fout.close()
-            print("saved to ", self.save_no)
-            self.save_no += 1
+            print("saved to ", SAVE_NO)
+            SAVE_NO += 1
             self.start_time = time.time()
             self.data={}
 
-        elif not from_creator(status):
+        if not from_creator(status):
             return True
         tweet_id, tweet_data = parse_tweet(status)
         self.data[tweet_id] = tweet_data
@@ -115,11 +120,16 @@ def from_creator(status):
 
 
 def main(save_fp, time_limit, keywords=None, accountstofollow=None):
+    global SAVE_NO
     api = create_api()
     tweets_listener = StdOutListener(api, save_fp, time_limit)
     stream = Stream(api.auth, tweets_listener)
-    stream.filter(follow=accountstofollow)
-
+    while True:
+        try:
+            stream.filter(follow=accountstofollow, stall_warnings=True)
+        except exceptions.ProtocolError:
+            SAVE_NO += 1
+            continue
 
 
 if __name__ == "__main__":
@@ -127,13 +137,12 @@ if __name__ == "__main__":
     NOTE!
     includes retweets of people in the list. post filtering is required for user ids not in our base'''
 
-    from datetime import datetime
 
     today = str(datetime.today().strftime('%d-%m-%Y'))
     print("Commencing Stream on ", today)
     # make file if not exist
     # todo make sure file doesnt exist
-    save_fp = "streamers\\output\\"
+    save_fp = "streamers\\output2\\"
     #try:
     #    open(save_fp)
     #    print(save_fp, "already exists. Not running to avoid overwrite")
@@ -147,3 +156,4 @@ if __name__ == "__main__":
     #return
     main( save_fp, 900, accountstofollow=accnts)
     #save every 15 minutes
+
