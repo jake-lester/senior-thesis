@@ -8,15 +8,15 @@ logger = logging.getLogger()
 
 
 def create_api():
-    consumer_key = os.getenv("CONSUMER_KEY")
-    consumer_secret = os.getenv("CONSUMER_SECRET")
-    access_token = os.getenv("ACCESS_TOKEN")
-    access_token_secret = os.getenv("ACCESS_TOKEN_SECRET")
+    consumer_key = os.getenv("CONSUMER_KEY").replace('"','')
+    consumer_secret = os.getenv("CONSUMER_SECRET").replace('"','')
+    access_token = os.getenv("ACCESS_TOKEN").replace('"','')
+    access_token_secret = os.getenv("ACCESS_TOKEN_SECRET").replace('"','')
 
-    print('consumer_key', len(consumer_key))
-    print("consumer_secret", len(consumer_secret))
-    print("access_token", len(access_token))
-    print("access_token_secret", len(access_token_secret))
+    assert 25== len(consumer_key)
+    assert 50 == len(consumer_secret)
+    assert 50 == len(access_token)
+    assert 45 == len(access_token_secret)
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
