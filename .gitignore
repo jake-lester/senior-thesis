@@ -1,6 +1,8 @@
 ## Ignore Data ##
-#*/tweepy-streamer/streamers/output/
-#*/tweepy-streamer/streamers/output2/
+tweepy-streamer/tweet_output/*
+stock_quotes/financial_output/*
+!tweepy-streamer/tweet_output/.keep.txt
+!stock_quotes/financial_output/.keep.txt
 
 ## Ignore Tokens ##
 #*/alpha_vantage_parameters.py
@@ -9,5 +11,4 @@
 **/__pycache__
 
 ## Ignore pycharm stuff ##
-
 /.idea
