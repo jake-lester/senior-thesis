@@ -15,7 +15,7 @@ from config import create_api
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
-SAVE_NO=3000
+SAVE_NO=1025
 
 
 class StdOutListener(StreamListener):
@@ -129,6 +129,7 @@ def main(save_fp, time_limit, keywords=None, accountstofollow=None):
             stream.filter(follow=accountstofollow, stall_warnings=True)
         except exceptions.ProtocolError:
             SAVE_NO += 1
+            print("!!!!! EXCEPTION !!!!!!")
             continue
 
 
@@ -142,7 +143,7 @@ if __name__ == "__main__":
     print("Commencing Stream on ", today)
     # make file if not exist
     # todo make sure file doesnt exist
-    save_fp = "streamers\\output2\\"
+    save_fp = "streamers\\extra_tweets\\"
     #try:
     #    open(save_fp)
     #    print(save_fp, "already exists. Not running to avoid overwrite")
