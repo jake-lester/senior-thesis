@@ -2,9 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/heroku/python-getting-started" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/heroku/python-getting-started-FAILED" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/heroku/tweepy-streamer" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/stock_quotes/wallstreet" vcs="Git" />
   </component>
 </project>
