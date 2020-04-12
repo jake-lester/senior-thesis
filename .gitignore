@@ -3,6 +3,7 @@ tweepy-streamer/tweet_output/*
 stock_quotes/financial_output/*
 !tweepy-streamer/tweet_output/.keep.txt
 !stock_quotes/financial_output/.keep.txt
+data/*
 
 ## Ignore Tokens ##
 #*/alpha_vantage_parameters.py
@@ -12,3 +13,6 @@ stock_quotes/financial_output/*
 
 ## Ignore pycharm stuff ##
 /.idea
+
+## Ignore google drive sync
+.tmp.drivedownload
