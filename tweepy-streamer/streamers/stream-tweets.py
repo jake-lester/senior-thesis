@@ -15,7 +15,7 @@ from config import create_api
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
-SAVE_NO=1025
+SAVE_NO=100
 
 
 class StdOutListener(StreamListener):
@@ -143,14 +143,14 @@ if __name__ == "__main__":
     print("Commencing Stream on ", today)
     # make file if not exist
     # todo make sure file doesnt exist
-    save_fp = "streamers\\extra_tweets\\"
+    save_fp = "tweepy-streamer\\tweet_output\\"
     #try:
     #    open(save_fp)
     #    print(save_fp, "already exists. Not running to avoid overwrite")
     #except:
     #f = open(save_fp, "w+")
     #f.close()
-    df = pd.read_csv(os.getcwd()+"\\finAccounts.csv")
+    df = pd.read_csv("tweepy-streamer\\finAccounts.csv")
     accnts = df.Twitter_ID.values
     accnts = [str(x) for x in accnts]
     #accnts.append("1193623572570345473")
