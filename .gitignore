@@ -3,7 +3,7 @@ tweepy-streamer/tweet_output/*
 stock_quotes/financial_output/*
 !tweepy-streamer/tweet_output/.keep.txt
 !stock_quotes/financial_output/.keep.txt
-data/twitter-data/*
+data/*
 !data/financial-data/.keep.txt
 !data/twitter-data-data/.keep.txt
 
