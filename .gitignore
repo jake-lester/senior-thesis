@@ -1,7 +1,6 @@
 ## Ignore Data ##
-stock_quotes/*.json
-tweepy-streamer/streamers/output/
-tweepy-streamer/streamers/output2
+*/tweepy-streamer/streamers/output/
+*/tweepy-streamer/streamers/output2/
 
 ## Ignore Tokens ##
-stock_quotes/alpha_vantage_parameters.py
+*/alpha_vantage_parameters.py
