@@ -16,3 +16,6 @@ data/*
 
 ## Ignore pycharm stuff ##
 /.idea
+
+## Ignore google drive sync
+.tmp.drivedownload
