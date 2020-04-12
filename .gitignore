@@ -1,6 +1,6 @@
 ## Ignore Data ##
-*/tweepy-streamer/streamers/output/
-*/tweepy-streamer/streamers/output2/
+#*/tweepy-streamer/streamers/output/
+#*/tweepy-streamer/streamers/output2/
 
 ## Ignore Tokens ##
-*/alpha_vantage_parameters.py
+#*/alpha_vantage_parameters.py
