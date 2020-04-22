@@ -6,7 +6,7 @@ stock_quotes/financial_output/*
 data/*
 
 ## Ignore Tokens ##
-#*/alpha_vantage_parameters.py
+*/alpha_vantage_parameters.py
 
 ## Ignore cache ##
 **/__pycache__
