@@ -40,5 +40,5 @@ if __name__ == "__main__":
     output = ts.on_stock_list(symbols=["SPX", "VIX"],interval="1min",outputsize="full")
     today = str(datetime.today().strftime("%d-%m-%Y"))
     print(today)
-    save_to_file(output, "data\\financial\\"+today+".json")
+    save_to_file(output, "sproj\\data\\financial\\"+today+".json")
     #print(output["APPL"])
