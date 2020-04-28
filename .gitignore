@@ -14,5 +14,8 @@ data/*
 ## Ignore pycharm stuff ##
 /.idea
 
+#ignore images
+/sproj/writeup/*
+
 ## Ignore google drive sync
 .tmp.drivedownload
