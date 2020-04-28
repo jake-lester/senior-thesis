@@ -4,6 +4,7 @@ stock_quotes/financial_output/*
 !tweepy-streamer/tweet_output/.keep.txt
 !stock_quotes/financial_output/.keep.txt
 data/*
+sproj/data/*
 
 ## Ignore Tokens ##
 */alpha_vantage_parameters.py
