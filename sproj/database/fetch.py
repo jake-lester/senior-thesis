@@ -90,3 +90,64 @@ def fetch_users():
     cnx.close()
 
     return user_df
+
+def fetch_nltk_acc():
+    cnx = create_cnx()
+    cursor = cnx.cursor()
+
+    query = ("SELECT * FROM `nltk_acc`")
+    cursor.execute(query)
+    nltk_acc = pd.DataFrame(cursor.fetchall())
+    nltk_acc.columns = cursor.column_names
+    nltk_acc.set_index(nltk_acc['label'], drop=True, inplace=True)
+    nltk_acc = nltk_acc.drop(columns=['label'])
+
+    cursor.close()
+    cnx.close()
+
+    return nltk_acc
+
+def fetch_flair_acc():
+    cnx = create_cnx()
+    cursor = cnx.cursor()
+
+    query = ("SELECT * FROM `flair_acc`")
+    cursor.execute(query)
+    flair_acc = pd.DataFrame(cursor.fetchall())
+    flair_acc.columns = cursor.column_names
+    flair_acc.set_index(flair_acc['label'], drop=True, inplace=True)
+    flair_acc = flair_acc.drop(columns=['label'])
+
+    cursor.close()
+    cnx.close()
+
+    return flair_acc
+
+def fetch_cor():
+    cnx = create_cnx()
+    cursor = cnx.cursor()
+
+    query = ("SELECT * FROM `corelation`")
+    cursor.execute(query)
+    cor_df = pd.DataFrame(cursor.fetchall())
+    cor_df.columns = cursor.column_names
+    #nltk_acc.set_index(nltk_acc['label'], drop=True, inplace=True)
+    #cor_df = cor_df.drop(columns=['label'])
+
+    cursor.close()
+    cnx.close()
+
+    return cor_df
+
+def custom_query(table, query):
+    cnx = create_cnx()
+    cursor = cnx.cursor()
+
+    cursor.execute(query)
+    custom_df = pd.DataFrame(cursor.fetchall())
+    custom_df.columns = cursor.column_names
+
+    cursor.close()
+    cnx.close()
+
+    return custom_df
