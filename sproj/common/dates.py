@@ -2,12 +2,12 @@
 
 import pandas as pd
 
-def group_data(data, value_col_name, method="lastValue", group='D'):
+def group_data(data, value_col_names, method="lastValue", group='D'):
     """
     Creates new dates, y arrays that go by group interval
     Keyword arguments:
         data -- dataframe with a dates column and specified value column
-        value_col_name -- string name of column that will be used as y value data
+        value_col_names -- list of string name of columns that will be used as y value data
         method -- string to decide how to determine y value
             "lastValue" -- take the last y value of a day
             "avg" -- average the y values in a day
@@ -18,12 +18,15 @@ def group_data(data, value_col_name, method="lastValue", group='D'):
     df = pd.DataFrame()
 
     df['datetime'] = pd.to_datetime(data['datetime'])
-    df[value_col_name] = pd.to_numeric(data[value_col_name])
+    for value_col_name in value_col_names:
+        df[value_col_name] = pd.to_numeric(data[value_col_name])
     df.set_index(df['datetime'], drop=True, inplace=True)
     if method == "lastValue":
         df = df.resample(group).last()
     elif method == "avg":
         df = df.resample(group).mean()
+    elif method == 'count':
+        df = df.resample(group).count()
     else:
         assert False
 
