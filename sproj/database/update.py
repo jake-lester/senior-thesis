@@ -61,3 +61,8 @@ def add_corelations(data, table_name="corelations"):
     cursor.executemany(query, val)
     cnx.commit()
 
+def add_rows(vals, query):
+    cnx = create_cnx()
+    cursor = cnx.cursor()
+    cursor.executemany(query, vals)
+    cnx.commit()
