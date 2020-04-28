@@ -3,6 +3,7 @@ import common.dates as dates
 import common.misc as misc
 import pandas as pd
 import matplotlib.pyplot as plt
+from datetime import timedelta
 
 import database.update as update
 
@@ -25,45 +26,38 @@ class CorMatrix:
     def prepare_data(self):
         # tweet_df=remove_neutral_sentiment(tweet_df)
         ##self.group_data()
-        self.vix_df = self.vix_df.diff()  # or pct change?
-        self.spx_df = self.spx_df.diff()
+        self.vix_df = self.vix_df.pct_change()  # or pct change?
+        self.spx_df = self.spx_df.pct_change()
         return self.concat_data()
 
     def group_data(self, group):
         # Group data by time period
-        self.vix_df = dates.group_data(self.vix_df, 'vix_close', method='lastValue', group=group)
+        self.vix_df = dates.group_data(self.vix_df, ['vix_close'], method='lastValue', group=group)
         self.vix_df.drop(labels='datetime', axis=1, inplace=True)
-        self.spx_df = dates.group_data(self.spx_df, 'spx_close', method='lastValue', group=group)
+        self.spx_df = dates.group_data(self.spx_df, ['spx_close'], method='lastValue', group=group)
         self.spx_df.drop(labels='datetime', axis=1, inplace=True)
-        self.tweet_df = dates.group_data(self.tweet_df, 'score', method='avg', group=group)
+        self.tweet_df = dates.group_data(self.tweet_df, ['nltk', 'flair'], method='avg', group=group)
 
     def concat_data(self):
         return pd.concat([self.vix_df, self.spx_df, self.tweet_df], axis=1, sort=True)
 
     def shift_vix_by_delta(self, delta):
-        self.vix_df = self.vix_df.shift(delta, axis=0)
+        self.vix_df.datetime = self.vix_df['datetime'] - timedelta(minutes=delta)
+        self.vix_df.set_index('datetime', drop=False)
 
     def shift_spx_by_delta(self, delta):
-        if delta is None:
-            delta = delta
+        self.spx_df.datetime = self.spx_df['datetime'] - timedelta(minutes=delta)
+        self.spx_df.set_index('datetime', drop=False)
 
     def shift_tweet_by_delta(self, delta=None):
-        if delta is None:
-            delta = delta
+        self.tweet_df.datetime = self.tweet_df['datetime'] - timedelta(minutes=delta)
+        self.tweet_df.set_index('datetime', drop=False)
 
-    def get_cor_matrix(self):
-        return self.data.corr()
+    def get_cor_matrix(self, method='pearson'):
+        return self.data.corr(method=method)
 
-    def plot_score_vs_spx(self):
-        self.data.plot(x='score', y='spx_close', kind='scatter')
-        plt.show()
-
-    def plot_score_vs_vix(self):
-        self.data.plot(x='score', y='vix_close', kind='scatter')
-        plt.show()
-
-    def plot_vix_vs_spx(self):
-        self.data.plot(x='vix_close', y='spx_close', kind='scatter')
+    def plot_score_vs_spx(self, x='spx', y='vix'):
+        self.data.plot(x=x, y=y, kind='scatter')
         plt.show()
 
 def plot_all_cor(data):
@@ -76,12 +70,18 @@ def plot_all_cor(data):
 def make_data(groups, deltas):
     tuples = misc.combinations(groups, deltas)
     index = pd.MultiIndex.from_tuples(tuples, names=['groups', 'deltas'])
-    data = pd.DataFrame(data=0, index=index, columns=['spx:tweet', 'vix:tweet', 'spx:vix'], dtype=float)
+    data = pd.DataFrame(data=0, index=index, columns=['spx:nltk',
+                                                      'spx:flair',
+                                                      'vix:nltk',
+                                                      'vix:flair',
+                                                      'spx:vix',
+                                                      'nltk:flair'],
+                        dtype=float)
 
     return data
 
 
-def iterate_cor(cormatrix, data):
+def iterate_cor(cormatrix, data, method):
     """
     DELTA MEASURED IN MINUTES
     :param cormatrix: CorMatrix Object
@@ -91,14 +91,49 @@ def iterate_cor(cormatrix, data):
     for x in data.index:
         cormatrix_copy = copy.deepcopy(cormatrix)
         group, delta = x[0], x[1]
+        cormatrix_copy.shift_spx_by_delta(delta)
         cormatrix_copy.shift_vix_by_delta(delta)
+        #cormatrix_copy.shift_tweet_by_delta(delta)
         cormatrix_copy.group_data(group)
         cormatrix_copy.data = cormatrix_copy.prepare_data()
-        matrix = cormatrix_copy.get_cor_matrix()
-        data.loc[(group, delta)]['spx:tweet'] = matrix.loc['spx_close']['score']
-        data.loc[(group, delta)]['vix:tweet'] = matrix.loc['vix_close']['score']
+        matrix = cormatrix_copy.get_cor_matrix(method=method)
+        data.loc[(group, delta)]['spx:nltk'] = matrix.loc['spx_close']['nltk']
+        data.loc[(group, delta)]['spx:flair'] = matrix.loc['spx_close']['flair']
+        data.loc[(group, delta)]['vix:nltk'] = matrix.loc['vix_close']['nltk']
+        data.loc[(group, delta)]['vix:flair'] = matrix.loc['vix_close']['flair']
         data.loc[(group, delta)]['spx:vix'] = matrix.loc['spx_close']['vix_close']
+        data.loc[(group, delta)]['nltk:flair'] = matrix.loc['nltk']['flair']
+
     return data
+
+def create_corelation_data(groups, deltas):
+    """
+    neut_sentiment -- "include_neut" or "exclude_neut"
+    """
+    DATA = {
+        'include_neut': {
+            'pearson': None,
+            'kendall': None,
+            'spearman': None},
+        'exclude_neut': {
+            'pearson': None,
+            'kendall': None,
+            'spearman': None}
+    }
+
+    vix_df, spx_df, tweet_df = prepare_data(remove_neutral_sent=False)
+    co = CorMatrix(vix_df, spx_df, tweet_df)
+    for method in ['pearson', 'kendall', 'spearman']:
+        data = make_data(groups, deltas)
+        DATA['include_neut'][method] = iterate_cor(co, data, method)
+
+    vix_df, spx_df, tweet_df = prepare_data(remove_neutral_sent=True)
+    co = CorMatrix(vix_df, spx_df, tweet_df)
+    for method in ['pearson', 'kendall', 'spearman']:
+        data = make_data(groups, deltas)
+        DATA['exclude_neut'][method] = iterate_cor(co, data, method)
+
+    return DATA
 
 if __name__ == "__main__":
     vix_df, spx_df, tweet_df = prepare_data()
@@ -108,7 +143,7 @@ if __name__ == "__main__":
     DATA = make_data(groups, deltas)
     DATA = iterate_cor(co, DATA)
     #plot_all_cor(DATA)
-    update.add_corelations(DATA)
+    #update.add_corelations(DATA)
 
     ''' Commented out to debug
 if __name__ == "__main__":
