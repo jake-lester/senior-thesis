@@ -22,19 +22,20 @@ def rename_fin_columns(vix_df, spx_df):
     return vix_df, spx_df
 
 
-def remove_neutral_sentiment(tweet_df, thresh=.2):
-    tweet_df = tweet_df[tweet_df['sentiment_score'].abs() > thresh]
+def remove_neutral_sentiment(tweet_df, model='nltk'):
+    #tweet_df = tweet_df[tweet_df[model].abs() > thresh]
+    #tweet_df[model] = [row[model] if True 0 if False for x for index, row in tweet_df.iterrows()]
+    tweet_df[model] = tweet_df[model].replace(0, np.nan)
     return tweet_df
 
 
-def weight_sentiment(tweet_df, user_df, sentiment_column='flair'):
-    # tweet_df[str(sentiment_column)] * user_df.loc[user_id]['total_followers']
+def weight_sentiment(tweet_df, user_df, sentiment_columns=['nltk','flair']):
 
     for user_id, row in user_df.iterrows():
         follower_count = row['total_followers']
-        df = tweet_df.loc[tweet_df['user_id'] == user_id][sentiment_column]
-        df = df.to_frame()
-        df[sentiment_column] = df['flair'] * Decimal((follower_count**(1./8)))
+        df = tweet_df.loc[tweet_df['user_id'] == user_id][sentiment_columns]
+        for sentiment_column in sentiment_columns:
+            df[sentiment_column] = df[sentiment_column] * Decimal((follower_count**(1./8)))
         df.index = df.index.astype('str')
         tweet_df.update(df)
     return tweet_df
@@ -47,11 +48,15 @@ def normalize(df, col):
 
     return df
 
-def prepare_data(senti_method='flair'):
+def prepare_data(senti_method=['nltk', 'flair'], remove_neutral_sent = True):
     vix_df, spx_df, tweet_df, user_df = fetch_data()
+    if remove_neutral_sent:
+        tweet_df = remove_neutral_sentiment(tweet_df)
+
     tweet_df = weight_sentiment(tweet_df, user_df)
-    tweet_df = normalize(tweet_df, senti_method)
-    tweet_df['score'] = tweet_df[senti_method]
+    for s in senti_method:
+        tweet_df = normalize(tweet_df, s)
+    #tweet_df['score'] = tweet_df[senti_method]
     vix_df, spx_df = rename_fin_columns(vix_df, spx_df)
     return vix_df, spx_df, tweet_df
 
