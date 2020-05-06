@@ -6,19 +6,17 @@ import json
 from datetime import datetime
 
 
-class IntraDayVix(TimeSeries):
+class StreamQuotes(TimeSeries):
     """
-    gets the intraday quotes for sp500.
+    gets the intraday quotes for sp500, vix.
     returns a dictionary with each symbol as key
     has intraday for past week when on_stock_list() run on interval="1min", outputsize="full"
     returns a dictionary with each symbol as key, datafram as value.
     This dataframe is intraday and has format that can be seen on alphavantage
-    #TODO make dataframe example in markdown
     """
 
     def on_stock(self, symbol, interval="60min", outputsize="compact"):
         # returns dataframe of single stock for current intraday quotes
-        # TODO include other alphavantage params in on_stock params
         d, meta = self.get_intraday(symbol=symbol, interval=interval, outputsize=outputsize)
         #df = pd.DataFrame.from_dict(d, orient='index')
         print(d)
@@ -36,7 +34,7 @@ def save_to_file(data, data_filename):
         json.dump(data, fp)
 
 if __name__ == "__main__":
-    ts = IntraDayVix(key=alpha_vantage_parameters.API_KEY)
+    ts = StreamQuotes(key=alpha_vantage_parameters.API_KEY)
     output = ts.on_stock_list(symbols=["SPX", "VIX"],interval="1min",outputsize="full")
     today = str(datetime.today().strftime("%d-%m-%Y"))
     print(today)

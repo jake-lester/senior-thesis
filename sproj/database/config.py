@@ -1,6 +1,8 @@
 import mysql.connector
 import logging
+
 logger = logging.getLogger()
+
 
 def create_cnx():
     cnx = mysql.connector.connect(
@@ -12,6 +14,5 @@ def create_cnx():
         auth_plugin='mysql_native_password'
     )
 
-    #todo make exceptions with logging. refer to streamers/config.py
     logger.info("Mysql connection created")
     return cnx

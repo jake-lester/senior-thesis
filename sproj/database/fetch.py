@@ -18,7 +18,7 @@ def fetch_vix():
     vix_df = pd.DataFrame(cursor.fetchall())
     vix_df.columns = cursor.column_names
     vix_df.set_index(vix_df['datetime'], inplace=True)
-    #vix_df.drop(labels='datetime', axis=1, inplace=True)  # weird bug above prevents drop
+    # vix_df.drop(labels='datetime', axis=1, inplace=True)  # weird bug above prevents drop
 
     cursor.close()
     cnx.close()
@@ -41,7 +41,7 @@ def fetch_spx():
     spx_df = pd.DataFrame(cursor.fetchall())
     spx_df.columns = cursor.column_names
     spx_df.set_index(spx_df['datetime'], inplace=True)
-    #spx_df.drop(labels='datetime', axis=1, inplace=True)  # weird bug above prevents drop
+    # spx_df.drop(labels='datetime', axis=1, inplace=True)  # weird bug above prevents drop
 
     cursor.close()
     cnx.close()
@@ -91,37 +91,40 @@ def fetch_users():
 
     return user_df
 
+
 def fetch_nltk_acc():
     cnx = create_cnx()
     cursor = cnx.cursor()
 
-    query = ("SELECT * FROM `nltk_acc`")
+    query = ("SELECT * FROM `nltk_validate`")
     cursor.execute(query)
     nltk_acc = pd.DataFrame(cursor.fetchall())
     nltk_acc.columns = cursor.column_names
-    nltk_acc.set_index(nltk_acc['label'], drop=True, inplace=True)
-    nltk_acc = nltk_acc.drop(columns=['label'])
+    nltk_acc.set_index(nltk_acc['correct_label'], drop=True, inplace=True)
+    nltk_acc = nltk_acc.drop(columns=['correct_label'])
 
     cursor.close()
     cnx.close()
 
     return nltk_acc
 
+
 def fetch_flair_acc():
     cnx = create_cnx()
     cursor = cnx.cursor()
 
-    query = ("SELECT * FROM `flair_acc`")
+    query = ("SELECT * FROM `flair_validate`")
     cursor.execute(query)
     flair_acc = pd.DataFrame(cursor.fetchall())
     flair_acc.columns = cursor.column_names
-    flair_acc.set_index(flair_acc['label'], drop=True, inplace=True)
-    flair_acc = flair_acc.drop(columns=['label'])
+    flair_acc.set_index(flair_acc['correct_label'], drop=True, inplace=True)
+    flair_acc = flair_acc.drop(columns=['correct_label'])
 
     cursor.close()
     cnx.close()
 
     return flair_acc
+
 
 def fetch_cor():
     cnx = create_cnx()
@@ -131,15 +134,16 @@ def fetch_cor():
     cursor.execute(query)
     cor_df = pd.DataFrame(cursor.fetchall())
     cor_df.columns = cursor.column_names
-    #nltk_acc.set_index(nltk_acc['label'], drop=True, inplace=True)
-    #cor_df = cor_df.drop(columns=['label'])
+    # nltk_acc.set_index(nltk_acc['label'], drop=True, inplace=True)
+    # cor_df = cor_df.drop(columns=['label'])
 
     cursor.close()
     cnx.close()
 
     return cor_df
 
-def custom_query(table, query):
+
+def custom_query(query):
     cnx = create_cnx()
     cursor = cnx.cursor()
 
