@@ -1,10 +1,13 @@
 # senior-thesis
-* Jacob Edelstein Lester *
-* Bard College *
-* Division of Science, Mathematics, and Computing *
-* Spring 2020 *
+**Jacob Edelstein Lester**
 
-## #todo make nice readme
+**Bard College**
+
+**Division of Science, Mathematics, and Computing**
+
+**Spring 2020**
+
+## ***todo*** make nice readme
 
 ## project report link: https://docs.google.com/document/d/e/2PACX-1vSdJs05ZPrILK0gBpOJDc_UfwsJcRVSGQxa4cS3OkfccNNsbqe1PV0mbESoXg09__VoJX98cKyvcjs6/pub#h.hpp9fb29jwy4
 
