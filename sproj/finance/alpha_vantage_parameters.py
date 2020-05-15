@@ -4,6 +4,6 @@ import pandas as pd
 
 #SP500_SYMBOLS = table[0].loc[1:,0].tolist()
 #SMALL_STOCK_LIST = SP500_SYMBOLS[0]  #small sample #TODO random sampling?
-API_KEY = "JUXVJ098WRPGRUD8"#"DKAEZH76GPPYMHHF"
+API_KEY = #Removed temporarily for security reasons
 
 #print(len(SP500_SYMBOLS))
