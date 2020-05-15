@@ -17,17 +17,15 @@ logger = logging.getLogger()
 
 SAVE_NO=1003
 
-
 class StdOutListener(StreamListener):
     """
     A listener that handles tweets received from the stream.
-    This one filters by key word and makes custom output.
+    This one filters by account and makes custom output.
     """
 
     def __init__(self, api, save_fp, stop_cond):
         self.start_time = time.time()
         self.save_fp = save_fp
-        #self.save_no=SAVE_NO
         self.stop_cond = stop_cond
         self.api = api
         self.data = {}
@@ -44,7 +42,6 @@ class StdOutListener(StreamListener):
             SAVE_NO += 1
             self.start_time = time.time()
             self.data={}
-
         if not from_creator(status):
             return True
         tweet_id, tweet_data = parse_tweet(status)
@@ -58,49 +55,31 @@ class StdOutListener(StreamListener):
 
 
 def parse_tweet(status):
-    #print(status)
+    """
+    Parses a status object and fetches the following fields: created_at, user_id, text, is_quoted, quoted_id
+    :param status: status object
+    :return: tuple of tweet ID and dictionary
+    """
     try:
         text = status.extended_tweet["full_text"]
     except AttributeError:
         text = status.text
-
-    #user_name = status._json['user']['screen_name']
     user_id = status._json['user']['id']
-    #user_followers = status._json['user']['followers_count']
     tweet_id = status._json['id']
     time_stamp = status._json['created_at']
-    #is_quote = hasattr(status._json, "quoted_status_id")
     try:
         quoted_status_id = status._json['quoted_status_id']
         is_quote = True
     except:
         quoted_status_id = None
         is_quote = False
-    #quote_count = status._json['quote_count']
-    #reply_count = status._json['reply_count']
-    #retweet_count = status._json['retweet_count']
-    #favorite_count = status._json['favorite_count']
-    #is_retweet=
-    #retweet_id =
-    """
-    is_retweet
-    quoted_status_id
-    quoted_status["""
 
     tweet_data = {"created_at": time_stamp,
-                  #"followers_count": user_followers,
-                  #"screen_name": user_name,
                   "user_id": user_id,
                   "text": text,
                   "is_quoted" : is_quote,
                   "quoted_id" : quoted_status_id
-                  #"quote_count": quote_count,
-                  #"reply_count": reply_count,
-                  #"retweet_count": retweet_count,
-                  #"favorite_count": favorite_count
-
                   }
-
     return tweet_id, tweet_data
 
 
@@ -137,24 +116,13 @@ if __name__ == "__main__":
     '''
     NOTE!
     includes retweets of people in the list. post filtering is required for user ids not in our base'''
-
-
     today = str(datetime.today().strftime('%d-%m-%Y'))
     print("Commencing Stream on ", today)
-    # make file if not exist
     # todo make sure file doesnt exist
     save_fp = "tweepy-streamer\\tweet_output\\"
-    #try:
-    #    open(save_fp)
-    #    print(save_fp, "already exists. Not running to avoid overwrite")
-    #except:
-    #f = open(save_fp, "w+")
-    #f.close()
     df = pd.read_csv("tweepy-streamer\\finAccounts.csv")
     accnts = df.Twitter_ID.values
     accnts = [str(x) for x in accnts]
-    #accnts.append("1193623572570345473")
-    #return
-    main( save_fp, 900, accountstofollow=accnts)
+    main(save_fp, 900, accountstofollow=accnts)
     #save every 15 minutes
 
