@@ -19,8 +19,6 @@ def make_sentiment(text, model):
     if model == 'nltk':
         sentiment = sid.polarity_scores(text)['compound']
     elif model == 'flair':
-        #tagger = SequenceTagger.load('ner')
-        #sentiment = classifier.predict(Sentence(text))
         s = Sentence(text)
         classifier.predict(s)
         sentiment = s.labels
@@ -30,6 +28,5 @@ def make_sentiment(text, model):
             elif sentiment[0].value == "NEGATIVE":
                 return sentiment[0].score * -1
         except:
-            print(text)
             return None
     return sentiment
