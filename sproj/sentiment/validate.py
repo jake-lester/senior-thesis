@@ -1,12 +1,12 @@
 import os
 import json
 import pandas as pd
-#import nltk
+# import nltk
 
-#nltk.download('vader_lexicon')
-#from nltk.sentiment.vader import SentimentIntensityAnalyzer
+# nltk.download('vader_lexicon')
+# from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
-#sid = SentimentIntensityAnalyzer()
+# sid = SentimentIntensityAnalyzer()
 
 import sentiment
 import clean_tweets
@@ -21,23 +21,34 @@ def load(fp):
 
 
 def score(df):
+    """
+    generates sentiment scores for text in DataFrame using NLTK and FLAIR
+    :param df: DataFrame with text column
+    :return: new DataFrame with new columns 'nltk' and 'flair'
+    """
     df['nltk'] = [sentiment.make_sentiment(row['text'], model="nltk") for index, row in df.iterrows()]
-    df['flair'] = [sentiment.make_sentiment(clean_tweets.remove_url_token(row['text']), model="flair") for index, row in df.iterrows()]
-    #df['nltk'] = [convert_score(sentiment.make_sentiment(row['text'], model="nltk")) for index, row in df.iterrows()]
-    #df['flair'] = [convert_score(sentiment.make_sentiment(clean_tweets.remove_url_token(row['text'])), model="flair") \
-    #               for index, row in df.iterrows()]
+    df['flair'] = [sentiment.make_sentiment(clean_tweets.remove_url_token(row['text']), model="flair") for index, row in
+                   df.iterrows()]
     return df
 
 
 def convert_score(value):
     """
     converts predicted sentiment value [-1:1] -> {0, 2, 4}
+    :param value: float raw sentiment score
+    :return: int new sentiment score
     """
     return round(value + 1) * 2
 
+
 def convert_all_scores(df):
-    df['nltk_c'] = [convert_score(row['nltk']) for index,row in df.iterrows()]
-    df['flair_c'] = [convert_score(row['flair']) for index,row in df.iterrows()]
+    """
+    performs conversion of sentiment score on all rows of DataFrame
+    :param df: DataFrame contains sentiment scores for NLTK and FLAIR
+    :return: new DataFrame with updated sentiment scores
+    """
+    df['nltk_c'] = [convert_score(row['nltk']) for index, row in df.iterrows()]
+    df['flair_c'] = [convert_score(row['flair']) for index, row in df.iterrows()]
     return df
 
 
@@ -49,9 +60,9 @@ def calculateMSE(df):
     return mean_squared_error(y_0, y_1)
 
 
-#DF = loadAllData("data\\testdata.manual.2009.06.14.csv")
-#DF = makePredictions(DF)
-#print(calculateMSE(DF))
+# DF = loadAllData("data\\testdata.manual.2009.06.14.csv")
+# DF = makePredictions(DF)
+# print(calculateMSE(DF))
 
 
 def loadAllDataFromDirectory(dir):
@@ -93,14 +104,8 @@ def write2csv(df, fp):
 
 
 if __name__ == "__main__":
-    df = load("data\\sentiment140.csv")
-    print(df.head())
-    df = df.loc[df['sentiment']==2]
-    print(df.head())
-    #print(df.head())
-    df = score(df)
-    #print(df.head())
-    df = convert_all_scores(df)
-    #print(df.head())
-    write2csv(df, "data\\validateSentimentBig.csv")
-
+    DF = load("data\\sentiment140.csv")
+    DF = DF.sample(n=5000)
+    DF = score(DF)
+    DF = convert_all_scores(DF)
+    write2csv(DF, "data\\validate_sentiment5000.csv")
