@@ -8,6 +8,7 @@
 **Spring 2020**
 
 ## ***todo*** make nice readme
+## ***todo*** merge restructure branch. It is most up-to-date
 
 ## project report link: https://docs.google.com/document/d/e/2PACX-1vSdJs05ZPrILK0gBpOJDc_UfwsJcRVSGQxa4cS3OkfccNNsbqe1PV0mbESoXg09__VoJX98cKyvcjs6/pub#h.hpp9fb29jwy4
 
