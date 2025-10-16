@@ -5,7 +5,7 @@
 
 **Division of Science, Mathematics, and Computing**
 
-_note: this README does not reflect my current documentation capabilities._
+_note: this project is immature and has potential to be explored more deep + proficiently_
 
 [project report link](https://docs.google.com/document/d/e/2PACX-1vSdJs05ZPrILK0gBpOJDc_UfwsJcRVSGQxa4cS3OkfccNNsbqe1PV0mbESoXg09__VoJX98cKyvcjs6/pub#h.hpp9fb29jwy4)
 
